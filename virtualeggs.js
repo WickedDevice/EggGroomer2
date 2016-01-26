@@ -203,6 +203,9 @@ module.exports = (function(){
         if(data == "Enter 'aqe' for CONFIG mode."){
             return true;
         }
+        else if(data.indexOf('automatically falling back to CONFIG mode') >= 0){
+            return true;
+        }
         return false;
     }
 
@@ -442,19 +445,47 @@ module.exports = (function(){
         return dataWithoutPrompts.trim();
     }
 
+    // if data begins with an allowed command it emits an event
+    function emitsEvent(data){
+        var allowed_commands = [
+            'restore defaults',
+            'get settings'
+        ];
+
+        for(var ii = 0; ii < allowed_commands.length; ii++){
+            var command_length = allowed_commands[ii].length;
+            if(data.length >= command_length){
+                if(data.substring(0, command_length) == allowed_commands[ii]){
+                    // data begins with allowed command
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     function handleIncomingData(comName, data){
         var data = removePromptsFromDataLine(data);
         var eventName = comName + '/' + data;
 
+
         // there are a many handlers that do not need to emit events
         // i.e. all those handlers that run during startup / config dump
-        if(data == ""){} // this is the most likely occurrence because of keep alive
+        if(data == ""){ // this is the most likely occurrence because of keep alive
+            if(stateByPort[comName].sentAqeCommand){
+                stateByPort[comName].readyToAcceptCommands = true;
+            }
+        }
+        else if(emitsEvent(data)) { // if it begins with a known sequence
+            myEventEmitter.emit(eventName);
+        }
         else if(handleSensorSuite(comName, data)){}
         else if(handleEggSerialNumber(comName, data)){}
         else if(handleFirmwareVersion(comName, data)){}
         else if(handleEnterAqe(comName, data)){
             // emit an event so that 'aqe' gets sent
-            myEventEmitter.emit(eventName);
+            myEventEmitter.emit(comName + '/' + "Enter 'aqe' for CONFIG mode.");
         }
         else if(handleSpiFlashStatus(comName, data)){}
         else if(handleSdCardStatus(comName, data)){}
@@ -541,42 +572,67 @@ module.exports = (function(){
     }
 
     function sendCommandsToPort(comName, commandList){
-        var numCommands = (commandList && commandList.length) ? commandList.length : 0;
-        for(var ii = 0; ii < numCommands; ii++) {
-            // create an event listener for the *response* to this command
-            var eventName = comName + '/' + commandList[ii];
-            if (ii <= numCommands - 2) {
+        if(!stateByPort[comName].readyToAcceptCommands){
+            return false;
+        }
+
+        commandList.forEach(function(command, index, theCommandList){
+            var numCommands = (theCommandList && theCommandList.length) ? theCommandList.length : 0;
+            var eventName = comName + '/' + command;
+            if (index <= numCommands - 2) {
                 myEventEmitter.once(eventName, function () {
                     var sp = getPortFromComName(comName);
                     if (sp && sp.isOpen()) {
                         try {
-                            sp.write(commandList[ii + 1]);
+                            sp.write(theCommandList[index + 1]);
                         }
                         catch (exception) {
                             console.log("Write Exception: " + exception);
                         }
                     }
                 });
+
             }
-            else {
+            else{
                 myEventEmitter.once(eventName, function () {
                     console.log(comName + ": All commands sent!");
                 });
             }
-        }
+        });
 
         // then fire off the first write
-        if(numCommands > 0){
-            sp.write(commandList[0]);
+        if(commandList && (commandList.length > 0)){
+            var sp = getPortFromComName(comName);
+            if (sp && sp.isOpen()) {
+                try {
+                    sp.write(commandList[0]);
+                }
+                catch(exception){
+                    console.log("Initial Write Exception: " + exception);
+                }
+            }
         }
+
+        return true;
     }
 
     var sendCommandsToAll = function(commandList){
         var comNames = getComNames();
         var numComNames = comNames.length;
-        for(var ii = 0; ii < numComNames; ii++){
+        var ii;
+
+        for(ii = 0; ii < numComNames; ii++){
+            var comName = comNames[ii];
+            if(!stateByPort[comName].readyToAcceptCommands){
+                return false; // wait for all ports to be ready
+            }
+        }
+
+        for(ii = 0; ii < numComNames; ii++){
             sendCommandsToPort(comNames[ii], commandList);
         }
+
+        return true;
     };
 
     return {
