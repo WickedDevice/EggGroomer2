@@ -9,6 +9,7 @@ router.get('/', function(req, res){
     return virtualeggs.initialize({
         keepInConfigMode: true,
         initInConfigMode: true}).then(function(ports){
+        console.log(ports);
         res.send(ports);
     }).catch(function(err){
         res.send("Error");

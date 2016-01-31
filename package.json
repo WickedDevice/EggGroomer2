@@ -18,5 +18,8 @@
     "bluebird": "~3.0.6",
     "express-promise-router": "~0.0.9",
     "serialport": "~2.0.6"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.5"
   }
 }
