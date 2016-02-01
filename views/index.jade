@@ -1,6 +1,7 @@
 extends layout
 
 block content
+
   div(ng-controller="EggsController as eggsCtrl")
     div( ng-repeat="egg in eggsCtrl.eggs")
       table.table.table-bordered.table-condensed.center-block(style="width:80%; text-align ")
@@ -10,99 +11,99 @@ block content
           th.col-md-4 Serial Data
         tr
           td Sensor Type
-          td#sensor-type(colspan='2',style={"text-align": "center"})
+          td#sensor-type(colspan='2',style={"text-align": "center"}) {{egg.serial.sensorType}}
         tr
           td MAC Address
           td#form-data-mac-address {{egg.form.macAddress}}
-          td#serial-data-mac-address {{egg.serial.macAddress}}
+          td#serial-data-mac-address {{egg.serial.macAddress.value}}
         tr
           td OpenSensors Username
           td#form-data-open-sensors-username {{egg.form.openSensorsUsername}}
-          td#serial-data-open-sensors-username {{egg.serial.openSensorsUsername}}
+          td#serial-data-open-sensors-username {{egg.serial.openSensorsUsername.value}}
         tr
           td OpenSensors Password
           td#form-data-open-sensors-password {{egg.form.openSensorsPassword}}
-          td#serial-data-open-sensors-password {{egg.serial.openSensorsUsername}}
+          td#serial-data-open-sensors-password {{egg.serial.openSensorsUsername.value}}
         tr
           td Shipped Firmware
           td#form-data-shipped-firmware {{egg.form.shippedFirmwareVersion}}
-          td#serial-data-shipped-firmware {{egg.serial.shippedFirmwareVersion}}
-        tr(ng-show="egg.sensorType == 'NO2 / CO'")
+          td#serial-data-shipped-firmware {{egg.serial.shippedFirmwareVersion.value}}
+        tr(ng-show="egg.serial.sensorType == 'NO2 / CO'")
           td CO S/N
           td#form-data-co-serial-number {{egg.form.coSerialNumber}}
-          td#serial-data-co-serial-number {{egg.serial.coSerialNumber}}
-        tr(ng-show="egg.sensorType == 'NO2 / CO'")
+          td#serial-data-co-serial-number {{egg.serial.coSerialNumber.value}}
+        tr(ng-show="egg.serial.sensorType == 'NO2 / CO'")
           td CO Date Code
           td#form-data-co-date-code {{egg.form.coDateCode}}
-          td#serial-data-co-date-code {{egg.serial.coDateCode}}
-        tr(ng-show="egg.sensorType == 'NO2 / CO'")
+          td#serial-data-co-date-code {{egg.serial.coDateCode.value}}
+        tr(ng-show="egg.serial.sensorType == 'NO2 / CO'")
           td CO Sensitivity
           td#form-data-co-sensitivity {{egg.form.coSensitivity}}
-          td#serial-data-co-sensitivity {{egg.serial.coSensitivity}}
-        tr(ng-show="egg.sensorType == 'NO2 / CO'")
+          td#serial-data-co-sensitivity {{egg.serial.coSensitivity.value}}
+        tr(ng-show="egg.serial.sensorType == 'NO2 / CO'")
           td CO Offset
           td#form-data-co-offset {{egg.form.coOffset}}
-          td#serial-data-co-offset {{egg.serial.coOffset}}
-        tr(ng-show="egg.sensorType == 'NO2 / CO'")
+          td#serial-data-co-offset {{egg.serial.coOffset.value}}
+        tr(ng-show="egg.serial.sensorType == 'NO2 / CO'")
           td NO2 S/N
           td#form-data-no2-serial-number {{egg.form.no2SerialNumber}}
-          td#serial-data-no2-serial-number {{egg.serial.no2SerialNumber}}
-        tr(ng-show="egg.sensorType == 'NO2 / CO'")
+          td#serial-data-no2-serial-number {{egg.serial.no2SerialNumber.value}}
+        tr(ng-show="egg.serial.sensorType == 'NO2 / CO'")
           td NO2 Date Code
           td#form-data-no2-date-code {{egg.form.no2DateCode}}
-          td#serial-data-no2-date-code {{egg.serial.no2DateCode}}
-        tr(ng-show="egg.sensorType == 'NO2 / CO'")
+          td#serial-data-no2-date-code {{egg.serial.no2DateCode.value}}
+        tr(ng-show="egg.serial.sensorType == 'NO2 / CO'")
           td NO2 Sensitivity
           td#form-data-no2-sensitivity {{egg.form.no2Sensitivity}}
-          td#serial-data-no2-sensitivity {{egg.serial.no2Sensitivity}}
-        tr(ng-show="egg.sensorType == 'NO2 / CO'")
+          td#serial-data-no2-sensitivity {{egg.serial.no2Sensitivity.value}}
+        tr(ng-show="egg.serial.sensorType == 'NO2 / CO'")
           td NO2 Offset
           td#form-data-no2-offset {{egg.form.no2Offset}}
-          td#serial-data-no2-offset {{egg.serial.no2Offset}}
-        tr(ng-show="egg.sensorType == 'SO2 / O3'")
+          td#serial-data-no2-offset {{egg.serial.no2Offset.value}}
+        tr(ng-show="egg.serial.sensorType == 'SO2 / O3'")
           td O3 S/N
           td#form-data-o3-serial-number {{egg.form.o3SerialNumber}}
-          td#serial-data-o3-serial-number {{egg.serial.o3SerialNumber}}
-        tr(ng-show="egg.sensorType == 'SO2 / O3'")
+          td#serial-data-o3-serial-number {{egg.serial.o3SerialNumber.value}}
+        tr(ng-show="egg.serial.sensorType == 'SO2 / O3'")
           td O3 Date Code
           td#form-data-o3-date-code {{egg.form.o3DateCode}}
-          td#serial-data-o3-date-code {{egg.serial.o3DateCode}}
-        tr(ng-show="egg.sensorType == 'SO2 / O3'")
+          td#serial-data-o3-date-code {{egg.serial.o3DateCode.value}}
+        tr(ng-show="egg.serial.sensorType == 'SO2 / O3'")
           td O3 Sensitivity
           td#form-data-o3-sensitivity {{egg.form.o3Sensitivity}}
-          td#serial-data-o3-sensitivity {{egg.serial.o3Sensitivity}}
-        tr(ng-show="egg.sensorType == 'SO2 / O3'")
+          td#serial-data-o3-sensitivity {{egg.serial.o3Sensitivity.value}}
+        tr(ng-show="egg.serial.sensorType == 'SO2 / O3'")
           td O3 Offset
           td#form-data-o3-offset {{egg.form.o3Offset}}
-          td#serial-data-o3-offset {{egg.serial.o3Offset}}
-        tr(ng-show="egg.sensorType == 'SO2 / O3'")
+          td#serial-data-o3-offset {{egg.serial.o3Offset.value}}
+        tr(ng-show="egg.serial.sensorType == 'SO2 / O3'")
           td SO2 S/N
           td#form-data-so2-serial-number {{egg.form.so2SerialNumber}}
-          td#serial-data-so2-serial-number {{egg.serial.so2SerialNumber}}
-        tr(ng-show="egg.sensorType == 'SO2 / O3'")
+          td#serial-data-so2-serial-number {{egg.serial.so2SerialNumber.value}}
+        tr(ng-show="egg.serial.sensorType == 'SO2 / O3'")
           td SO2 Date Code
           td#form-data-so2-date-code {{egg.form.so2DateCode}}
-          td#serial-data-so2-date-code {{egg.serial.so2DateCode}}
-        tr(ng-show="egg.sensorType == 'SO2 / O3'")
+          td#serial-data-so2-date-code {{egg.serial.so2DateCode.value}}
+        tr(ng-show="egg.serial.sensorType == 'SO2 / O3'")
           td SO2 Sensitivity
           td#form-data-so2-sensitivity {{egg.form.so2Sensitivity}}
-          td#serial-data-so2-sensitivity {{egg.serial.so2Sensitivity}}
-        tr(ng-show="egg.sensorType == 'SO2 / O3'")
+          td#serial-data-so2-sensitivity {{egg.serial.so2Sensitivity.value}}
+        tr(ng-show="egg.serial.sensorType == 'SO2 / O3'")
           td SO2 Offset
           td#form-data-so2-offset {{egg.form.so2Offset}}
-          td#serial-data-so2-offset {{egg.seiral.so2Offset}}
-        tr(ng-show="egg.sensorType == 'Particulate'")
+          td#serial-data-so2-offset {{egg.seiral.so2Offset.value}}
+        tr(ng-show="egg.serial.sensorType == 'Particulate'")
           td PM Offset
           td#form-data-pm-offset {{egg.form.pmOffset}}
-          td#serial-data-pm-offset {{egg.serial.pmOffset}}
+          td#serial-data-pm-offset {{egg.serial.pmOffset.value}}
         tr
           td Temperature Offset
           td#form-data-temperature-offset {{egg.form.temperatureOffset}}
-          td#serial-data-temperature-offset {{egg.serial.temperatureOffset}}
+          td#serial-data-temperature-offset {{egg.serial.temperatureOffset.value}}
         tr
           td Humidity Offset
           td#form-data-humidity-offset {{egg.form.humidityOffset}}
-          td#serial-data-humidity-offset {{egg.serial.humidityOffset}}
+          td#serial-data-humidity-offset {{egg.serial.humidityOffset.value}}
         tr
           td Date Shipped
           td#form-data-date-shipped(colspan='2',style={"text-align": "center"}) {{egg.form.dateShipped}}
@@ -118,3 +119,4 @@ block content
         tr
           td Customer Address
           td#form-data-customer-address(colspan='2',style={"text-align": "center"}) {{egg.form.customerAddress}}
+
