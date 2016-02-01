@@ -1,23 +1,16 @@
 var expressPromiseRouter = require("express-promise-router");
 var router = expressPromiseRouter();
 var Promise = require("bluebird");
-var virtualeggs = require('../virtualeggs');
+var formdata = require('../eggformdata');
 
 /* GET home page. */
 router.get('/', function(req, res){
-
-    return virtualeggs.initialize({
-        keepInConfigMode: true,
-        initInConfigMode: true}).then(function(ports){
-        console.log(ports);
-        res.send(ports);
-    }).catch(function(err){
+    return formdata.load().catch(function(err){
+        console.log(err);
         res.send("Error");
+    }).then(function(database){
+        res.send(database);
     });
-});
-
-router.get('/eggs', function(req, res){
-   res.send(virtualeggs.getConnectedEggs());
 });
 
 router.get('/testsend', function(req, res){

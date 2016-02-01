@@ -17,9 +17,10 @@
     "bhttp": "~1.2.1",
     "bluebird": "~3.0.6",
     "express-promise-router": "~0.0.9",
-    "serialport": "~2.0.6"
-  },
-  "devDependencies": {
-    "grunt": "^0.4.5"
+    "serialport": "~2.0.6",
+    "edit-google-spreadsheet": "~0.2.21",
+    "bootstrap": "~3.3.6",
+    "jquery": "~2.2.0",
+    "angular": "~1.4.9"
   }
 }

@@ -3,6 +3,7 @@ var serialPort = Promise.promisifyAll(require("serialport"));
 Promise.promisifyAll(serialPort.SerialPort.prototype);
 var SerialPort = serialPort.SerialPort;
 var EventEmitter = require('events');
+var util = require('util');
 
 module.exports = (function(){
 
@@ -55,7 +56,7 @@ module.exports = (function(){
             console.log(port);
             try{
                 var comName = port.comName;
-                stateByPort[comName] = {};
+                stateByPort[comName] = {data:{}};
 
                 var sp = new SerialPort(comName, {
                     baudrate: 115200,
@@ -133,7 +134,7 @@ module.exports = (function(){
         var locationOfFieldString = data.indexOf(fieldString);
         if(locationOfFieldString >= 0){
             data = data.slice(locationOfFieldString + fieldString.length).trim();
-            stateByPort[comName][objFieldName] = {
+            stateByPort[comName].data[objFieldName] = {
                 value: data
             };
             return true;
@@ -143,15 +144,15 @@ module.exports = (function(){
 
     function handleStatusField(comName, data, fieldString, objStatusFieldName){
         // ensure the status field exists
-        if(!stateByPort[comName].status){
-            stateByPort[comName].status = {};
+        if(!stateByPort[comName].data.status){
+            stateByPort[comName].data.status = {};
         }
 
         var locationOfFieldString = data.indexOf(fieldString);
         if(locationOfFieldString >= 0){
             data = data.slice(locationOfFieldString + fieldString.length).trim();
             var isOk = (data.indexOf("OK") >= 0);
-            stateByPort[comName].status[objStatusFieldName] = {
+            stateByPort[comName].data.status[objStatusFieldName] = {
                 value: isOk
             };
             return true;
@@ -174,7 +175,7 @@ module.exports = (function(){
             if(hasValue){
                 obj.value = data;
             }
-            stateByPort[comName][objFieldName] = obj;
+            stateByPort[comName].data[objFieldName] = obj;
             return true;
         }
         return false;
@@ -185,7 +186,7 @@ module.exports = (function(){
         var parts = data.split("Sensor Suite");
         if(parts.length > 1) {
             var sensorType = removeLeadingBarAndTrim(parts[0]);
-            stateByPort[comName].sensorType = sensorType;
+            stateByPort[comName].data.sensorType = sensorType;
             return true;
         }
         return false;
@@ -635,8 +636,22 @@ module.exports = (function(){
         return true;
     };
 
+    function getEggs(){
+        var ports = getComNames();
+        var ret = {};
+        for(var ii = 0; ii < ports.length; ii++){
+            var serialNumber = stateByPort[ports[ii]].data.eggSerialNumber ? stateByPort[ports[ii]].data.eggSerialNumber.value : null;
+            if(serialNumber){
+                ret[serialNumber] = JSON.parse(JSON.stringify(stateByPort[ports[ii]].data));
+                ret[serialNumber].serialPort = ports[ii];
+            }
+        }
+        return ret;
+    }
+
     return {
         initialize: initialize,
+        getConnectedEggs:getEggs,
         sendCommandsToPort: sendCommandsToPort,
         sendCommandsToAll: sendCommandsToAll
     }
