@@ -3,7 +3,7 @@ extends layout
 block content
 
   div(ng-controller="EggsController as eggsCtrl")
-      table.table.table-bordered.table-condensed.center-block(style="width:80%; text-align ", ng-repeat="egg in eggsCtrl.eggs")
+      table.table.table-bordered.table-condensed.center-block(style="width:80%; text-align ", ng-repeat="egg in eggsCtrl.eggs | filter:{active:true}")
         tr
           th.col-md-3 Field
           th.col-md-4 Form Data
